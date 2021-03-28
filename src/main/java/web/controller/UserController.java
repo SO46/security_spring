@@ -3,48 +3,38 @@ package web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import web.model.Role;
 import web.model.User;
 import web.service.UserService;
 
+import java.security.Principal;
 import java.util.List;
 
+
 @Controller
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/")
-    public String showAllUsers(Model model) {
-        List<User> userList = userService.allUsers();
-        model.addAttribute("users", userList);
-        return "userList";
+    @GetMapping("userInfo")
+    public String showAllUsers(Model model, Principal principal) {
+        User user = userService.getUserByName(principal.getName());
+        model.addAttribute("message", "You are logged in as " + principal.getName());
+        model.addAttribute("userInfo", user);
+        System.out.println(userService.getAllRoles());
+        List<Role> roleList = userService.getAllRoles();
+        for (Role role: roleList
+        ) {
+            System.out.println(role);
+        }
+        return "user-data";
     }
 
-    @GetMapping("addNewUser")
-    public String addNewUser(Model model) {
-        User user = new User();
-        model.addAttribute("newUser", user);
-        return "userEdit";
-    }
 
-    @PostMapping("editUser")
-    public String editUser(@ModelAttribute("newUser") User user) {
-        userService.edit(user);
-        return "redirect:/";
-    }
-
-    @GetMapping("updateUser/{id}")
-    public String updateUser(@PathVariable("id") int id, Model model) {
-        model.addAttribute("newUser", userService.getById(id));
-        return "userEdit";
-    }
-
-    @GetMapping("deleteUser/{id}")
-    public String deleteUser(@PathVariable("id") int id) {
-        userService.delete(id);
-        return "redirect:/";
-    }
 
 }
+

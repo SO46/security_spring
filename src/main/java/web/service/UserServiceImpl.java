@@ -1,6 +1,7 @@
 package web.service;
 
 import web.dao.UserDao;
+import web.model.Role;
 import web.model.User;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -17,6 +18,22 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
+
+    @Override
+    public List<Role> getAllRoles() {
+        return userDao.getAllRoles();
+    }
+
+    @Override
+    public Role getRoleById(Long id) {
+        return userDao.getRoleById(id);
+    }
+
+    @Override
+    public User getUserByName(String username) {
+        return userDao.getByName(username);
+    }
+
     @Override
     public List<User> allUsers() {
         return userDao.allUsers();
@@ -26,7 +43,7 @@ public class UserServiceImpl implements UserService {
         userDao.add(user);
     }
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
         userDao.delete(id);
     }
     @Override
@@ -34,7 +51,8 @@ public class UserServiceImpl implements UserService {
         userDao.edit(user);
     }
     @Override
-    public User getById(int id) {
+    public User getById(Long id) {
         return userDao.getById(id);
     }
+
 }
